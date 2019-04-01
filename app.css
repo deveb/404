@@ -9,6 +9,7 @@ html, body {
  font-family: Consolas, monaco, monospace;
 }
 body {
+ overscroll-behavior: contain;
  display: flex;
  justify-content:center;
  align-items:center;
