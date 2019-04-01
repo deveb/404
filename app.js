@@ -167,6 +167,57 @@ const NotFoundGames = (function() {
         }
       });
     }
+
+    const handleGesture = function () {
+      // gist from https://gist.github.com/SleepWalker/da5636b1abcbaff48c4d
+      let touchstartX = 0;
+      let touchstartY = 0;
+      let touchendX = 0;
+      let touchendY = 0;
+
+      const gestureZone = document.body;
+
+      gestureZone.addEventListener('touchstart', function(event) {
+        touchstartX = event.changedTouches[0].screenX;
+        touchstartY = event.changedTouches[0].screenY;
+      }, false);
+
+      gestureZone.addEventListener('touchend', function(event) {
+        touchendX = event.changedTouches[0].screenX;
+        touchendY = event.changedTouches[0].screenY;
+        handleGesture();
+      }, false);
+
+      function handleGesture() {
+        let moved = 0
+        const offset = {
+          left: touchstartX - touchendX,
+          right: touchendX - touchstartX,
+          top: touchstartY - touchendY,
+          down: touchendY - touchstartY
+        }
+        const maxOffset = Math.max(offset.left, offset.right, offset.top, offset.down)
+        if (touchendY === touchstartY && touchendX === touchstartX) {
+           // console.log('Tap');
+        } else if (offset.left === maxOffset) {
+          moved = sweep.left()
+          sync()
+        } else if (offset.right === maxOffset) {
+          moved = sweep.right()
+          sync()
+        } else if (offset.top === maxOffset) {
+          moved = sweep.top()
+          sync()
+        } else if (offset.down === maxOffset) {
+          moved = sweep.down()
+          sync()
+        }
+        if (moved > 0) {
+          setTimeout(next, 100)
+        }
+      }
+    }
+
     const next = function(){
       emergence(1);
       sync();
@@ -216,6 +267,7 @@ const NotFoundGames = (function() {
         sync()
         takeASnapshot();
         handleKeyDown();
+        handleGesture();
       },
       _fill: function () {
         tiles = [[null,4,8,16],[32,64,128,256],[512,1024,2048,4096],[8192,16384,32768, 65536]]
