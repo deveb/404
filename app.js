@@ -198,7 +198,7 @@ const NotFoundGames = (function() {
           down: touchendY - touchstartY
         }
         const maxOffset = Math.max(offset.left, offset.right, offset.top, offset.down)
-        if (touchendY === touchstartY && touchendX === touchstartX) {
+        if (maxOffset < 15 || touchendY === touchstartY && touchendX === touchstartX) {
            // console.log('Tap');
         } else if (offset.left === maxOffset) {
           moved = sweep.left()
