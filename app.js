@@ -106,6 +106,7 @@ const NotFoundGames = (function() {
             tiles[target.y][target.x] += tiles[y][x]
             tiles[y][x] = null
             added +=1
+            moved +=1
           // move
           } else if (!tiles[target.y][target.x]) {
             tiles[target.y][target.x] = tiles[y][x]
