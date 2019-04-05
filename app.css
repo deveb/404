@@ -33,6 +33,103 @@ main {
  height: 100%;
  z-index: 2;
 }
+/* SkateJump */
+#SkateJump {
+ position: relative;
+ width: 100vw;
+ height: 50vw;
+ max-width: 800px;
+ max-height: 250px;
+ display: flex;
+ justify-content:flex-start;
+ align-items:flex-end;
+}
+#SkateJump #skater {
+  display: grid;
+  grid-template-columns: 12.5% 1fr;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+ height: 100%;
+}
+#SkateJump #skater span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  width:100%;
+}
+#SkateJump #skater span#score {
+  color: #eff0eb;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+#SkateJump #skater span.pushoff {
+  background: url(./images/pushoff.png) no-repeat left bottom/ 400% auto;
+  -webkit-filter: invert(100%);
+  filter: invert(100%);
+  animation:pushoff 1s steps(4) infinite;
+}
+@keyframes pushoff {
+    from {background-position: 0 bottom}
+    to   {background-position: 135% bottom}
+}
+#SkateJump #skater span.ollie {
+  background: url(./images/ollie.png) no-repeat left bottom/ 500% auto;
+  -webkit-filter: invert(100%);
+  filter: invert(100%);
+  animation:ollie 1.2s steps(4) infinite;
+}
+@keyframes ollie {
+    from {background-position: 25% 100%}
+    to   {background-position: 125% 75%}
+}
+#SkateJump #skater span.pause {
+  background: url(./images/pushoff.png) no-repeat left bottom/ 400% auto;
+  filter: invert(100%);
+}
+#SkateJump #grids {
+ overflow: hidden;
+ display: grid;
+ grid-template-columns: 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25% 6.25%;
+ position: absolute;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+}
+
+#SkateJump #grids .line {
+  width: 100%;
+  height: 100%;
+}
+#SkateJump #grids .line.ground_cone {
+  background: url(./images/cone.png) no-repeat right bottom/ 100% auto;
+  -webkit-filter: invert(100%);
+  filter: invert(100%);
+}
+#SkateJump #grids .line.ground_1 {
+  background: url(./images/ground_1.png) no-repeat right bottom/ 100% auto;
+  -webkit-filter: invert(100%);
+  filter: invert(100%);
+}
+#SkateJump #grids .line.ground_2 {
+  background: url(./images/ground_2.png) no-repeat right bottom/ 100% auto;
+  -webkit-filter: invert(100%);
+  filter: invert(100%);
+}
+#SkateJump #grids .line.ground_3 {
+  background: url(./images/ground_3.png) no-repeat right bottom/ 100% auto;
+  -webkit-filter: invert(100%);
+  filter: invert(100%);
+}
+#SkateJump #grids .line.ground_4 {
+  background: url(./images/ground_4.png) no-repeat right bottom/ 100% auto;
+  -webkit-filter: invert(100%);
+  filter: invert(100%);
+}
 
 /* 2048 */
 #TwoOFourEight {

@@ -282,6 +282,90 @@ const NotFoundGames = (function() {
     };
   })();
 
+  const SkateJump = (function() {
+    const TITLE = 'SkateJump'
+    const GROUND_SIZE = 16
+    const GROUND_TILES = [1, 2, 3, 4]
+
+    let grounds = Array(GROUND_SIZE);
+    let status = 'pushoff'
+    let loop = null
+    let score = 0
+
+    const setup = function () {
+      let element = document.createElement('div');
+      element.id=TITLE;
+      element.innerHTML = `
+       <div id="skater">
+         <span class='pushoff'></span>
+         <span id='score'></span>
+       </div>
+       <div id="grids">
+         <span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span>
+         <span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span>
+         <span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span>
+         <span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span>
+       </div>`
+      document.getElementsByTagName("main")[0].appendChild(element)
+    }
+    const sync = function() {
+      let gridsElement = document.getElementById("grids");
+      for (let x = 0; x < GROUND_SIZE; x++) {
+        gridsElement.children[x].className = 'line ground_'+grounds[x]
+      }
+      let scoreElement = document.getElementById("score");
+      scoreElement.innerHTML = score;
+    }
+    const next = function() {
+      if (grounds[0] === 'cone'){
+          score += 1
+      }
+      for (let x = 1; x < GROUND_SIZE; x++) {
+         grounds[x-1] = grounds[x]
+      }
+      if (grounds[GROUND_SIZE-3] === 'cone') {
+        grounds[GROUND_SIZE-1] = GROUND_TILES.select()
+      } else {
+        grounds[GROUND_SIZE-1] = ['cone'].concat(GROUND_TILES).select()
+      }
+      sync()
+      if (grounds[0] === 'cone' && status === 'pushoff') {
+        clearInterval(loop)
+        module.retry(TITLE)
+        let skaterElement = document.getElementById("skater");
+        skaterElement.children[0].className = 'pause'
+      }
+    }
+    const handleAnyInput = function () {
+      const handle = function(event) {
+        if (status === 'ollie') return;
+        status = 'ollie'
+        let skaterElement = document.getElementById("skater");
+        skaterElement.children[0].className = 'ollie'
+        setTimeout(function () {
+          let skaterElement = document.getElementById("skater");
+          skaterElement.children[0].className = 'pushoff'
+          status = 'pushoff'
+        }, 1200)
+      }
+      document.addEventListener('keydown', handle);
+      document.body.addEventListener('touchend', handle, false);
+
+    }
+
+    return {
+      setup,
+      initialize: function() {
+        score = 0
+        for (let x = 0; x < GROUND_SIZE; x++) {
+          grounds[x] = GROUND_TILES.select()
+        }
+        sync()
+        loop = setInterval(next, 400);
+        handleAnyInput()
+      }
+    }
+  })();
   const retry = function(title) {
     let retry = document.createElement('div');
     retry.id='retry';
@@ -295,7 +379,7 @@ const NotFoundGames = (function() {
   }
   let module = {
     config: {debug: false},
-    games: [TwoOFourEight],
+    games: [TwoOFourEight, SkateJump],
     retry
   }
   return {
@@ -305,6 +389,7 @@ const NotFoundGames = (function() {
     select: function () {
       return module.games.select()
     },
-    TwoOFourEight
+    TwoOFourEight,
+    SkateJump
   };
 })();
