@@ -11,6 +11,7 @@ Array.prototype.copy2D = function(){
 
 const NotFoundGames = (function() {
   const TwoOFourEight = (function() {
+    const TITLE = 'TwoOFourEight'
     const TILE_SIZE = 4
     const EMERGENCE_TILES = [2, 4]
 
@@ -20,7 +21,7 @@ const NotFoundGames = (function() {
 
     const setup = function () {
       let element = document.createElement('div');
-      element.id='TwoOFourEight';
+      element.id=TITLE;
       element.innerHTML = `
        <div id="tiles">
          <span class="tile"></span><span class="tile"></span><span class="tile"></span><span class="tile"></span>
@@ -224,15 +225,7 @@ const NotFoundGames = (function() {
       sync();
       takeASnapshot();
       if(!movable()){
-        let retry = document.createElement('div');
-        retry.id='retry';
-        retry.innerHTML = '<p>Do you wanna <button>retry</button>?</p>'
-        let button = retry.getElementsByTagName("button")[0];
-        button.addEventListener("click", function(){
-          NotFoundGames.TwoOFourEight.initialize()
-          document.getElementById("retry").remove()
-        });
-        document.getElementById("TwoOFourEight").appendChild(retry)
+        module.retry(TITLE)
       }
     }
     const movable = function () {
@@ -289,9 +282,21 @@ const NotFoundGames = (function() {
     };
   })();
 
+  const retry = function(title) {
+    let retry = document.createElement('div');
+    retry.id='retry';
+    retry.innerHTML = '<p>Do you wanna <button>retry</button>?</p>'
+    let button = retry.getElementsByTagName("button")[0];
+    button.addEventListener("click", function(){
+      NotFoundGames[title].initialize()
+      document.getElementById("retry").remove()
+    });
+    document.getElementById(title).appendChild(retry)
+  }
   let module = {
     config: {debug: false},
-    games: [TwoOFourEight]
+    games: [TwoOFourEight],
+    retry
   }
   return {
     set_config: function (config) {
