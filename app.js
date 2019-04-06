@@ -346,7 +346,7 @@ const NotFoundGames = (function() {
           let skaterElement = document.getElementById("skater");
           skaterElement.children[0].className = 'pushoff'
           status = 'pushoff'
-        }, 1200)
+        }, 900)
       }
       document.addEventListener('keydown', handle);
       document.body.addEventListener('touchend', handle, false);
@@ -361,7 +361,7 @@ const NotFoundGames = (function() {
           grounds[x] = GROUND_TILES.select()
         }
         sync()
-        loop = setInterval(next, 400);
+        loop = setInterval(next, 300);
         handleAnyInput()
       }
     }
