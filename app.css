@@ -70,7 +70,10 @@ main {
   background: url(./images/pushoff.png) no-repeat left bottom/ 400% auto;
   -webkit-filter: invert(100%);
   filter: invert(100%);
-  animation:pushoff 1s steps(4) infinite;
+  animation: pushoff 0.8s 0s steps(4),
+             pushoff 0.8s 0.8s steps(1),
+             pushoff 0.8s 2.4s steps(4) 2,
+             pushoff 0.8s 3.2s steps(4);
 }
 @keyframes pushoff {
     from {background-position: 0 bottom}
