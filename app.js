@@ -291,6 +291,7 @@ const NotFoundGames = (function() {
     let status = 'pushoff'
     let loop = null
     let score = 0
+    let frame = 0
 
     const setup = function () {
       let element = document.createElement('div');
@@ -361,7 +362,10 @@ const NotFoundGames = (function() {
           grounds[x] = GROUND_TILES.select()
         }
         sync()
-        loop = setInterval(next, 300);
+        loop = setInterval(function() {
+          if (frame % 30 === 0) next()
+          frame += 1
+        }, 10);
         handleAnyInput()
       }
     }
