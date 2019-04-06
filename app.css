@@ -46,7 +46,7 @@ main {
 }
 #SkateJump #skater {
   display: grid;
-  grid-template-columns: 12.5% 1fr;
+  grid-template-columns: 3% 12.5% 1fr;
   position: absolute;
   top: 0;
   left: 0;

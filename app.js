@@ -298,6 +298,7 @@ const NotFoundGames = (function() {
       element.id=TITLE;
       element.innerHTML = `
        <div id="skater">
+         <span class='offset'></span>
          <span class='pushoff'></span>
          <span id='score'></span>
        </div>
@@ -329,23 +330,24 @@ const NotFoundGames = (function() {
       } else {
         grounds[GROUND_SIZE-1] = ['cone'].concat(GROUND_TILES).select()
       }
-      sync()
-      if (grounds[0] === 'cone' && status === 'pushoff') {
+      if (grounds[1] === 'cone' && status === 'pushoff') {
         clearInterval(loop)
         module.retry(TITLE)
         let skaterElement = document.getElementById("skater");
-        skaterElement.children[0].className = 'pause'
+        skaterElement.children[1].className = 'pause'
+        return
       }
+      sync()
     }
     const handleAnyInput = function () {
       const handle = function(event) {
         if (status === 'ollie') return;
         status = 'ollie'
         let skaterElement = document.getElementById("skater");
-        skaterElement.children[0].className = 'ollie'
+        skaterElement.children[1].className = 'ollie'
         setTimeout(function () {
           let skaterElement = document.getElementById("skater");
-          skaterElement.children[0].className = 'pushoff'
+          skaterElement.children[1].className = 'pushoff'
           status = 'pushoff'
         }, 900)
       }
