@@ -292,6 +292,7 @@ const NotFoundGames = (function() {
     let loop = null
     let score = 0
     let frame = 0
+    let ollied = 0
 
     const setup = function () {
       let element = document.createElement('div');
@@ -319,6 +320,7 @@ const NotFoundGames = (function() {
       scoreElement.innerHTML = score;
     }
     const next = function() {
+      if (new Date().getTime() - ollied > 900 - 100) status = 'pushoff'
       if (grounds[0] === 'cone'){
           score += 1
       }
@@ -341,8 +343,10 @@ const NotFoundGames = (function() {
     }
     const handleAnyInput = function () {
       const handle = function(event) {
-        if (status === 'ollie') return;
+        const now = new Date().getTime()
+        if (status === 'ollie' || now - ollied < 900) return;
         status = 'ollie'
+        ollied = now
         let skaterElement = document.getElementById("skater");
         skaterElement.children[1].className = 'ollie'
         setTimeout(function () {
