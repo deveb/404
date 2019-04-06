@@ -83,11 +83,21 @@ main {
   background: url(./images/ollie.png) no-repeat left bottom/ 500% auto;
   -webkit-filter: invert(100%);
   filter: invert(100%);
-  animation:ollie 1.2s steps(4) infinite;
+  animation: ollie_start 0.3s 0s steps(2),
+             ollie_pause 0.3s 0.3s steps(1),
+             ollie_end 0.3s 0.6s steps(2);
 }
-@keyframes ollie {
+@keyframes ollie_start {
     from {background-position: 25% 100%}
-    to   {background-position: 125% 75%}
+    to   {background-position: 75% 100%}
+}
+@keyframes ollie_pause {
+    from {background-position: 75% 100%}
+    to   {background-position: 75% 100%}
+}
+@keyframes ollie_end {
+    from {background-position: 75% 100%}
+    to   {background-position: 125% 100%}
 }
 #SkateJump #skater span.pause {
   background: url(./images/pushoff.png) no-repeat left bottom/ 400% auto;
