@@ -320,26 +320,32 @@ const NotFoundGames = (function() {
       scoreElement.innerHTML = score;
     }
     const next = function() {
+      frame += 1
+      // Consider last 100ms of ollie as pushoff
       if (new Date().getTime() - ollied > 900 - 100) status = 'pushoff'
-      if (grounds[0] === 'cone'){
-          score += 1
+      // Update animation every 30 frames
+      if ((frame - 1) % 30 === 0){
+        if (grounds[0] === 'cone'){
+            score += 1
+        }
+        for (let x = 1; x < GROUND_SIZE; x++) {
+           grounds[x-1] = grounds[x]
+        }
+        if (grounds[GROUND_SIZE-3] === 'cone') {
+          grounds[GROUND_SIZE-1] = GROUND_TILES.select()
+        } else {
+          grounds[GROUND_SIZE-1] = ['cone'].concat(GROUND_TILES).select()
+        }
       }
-      for (let x = 1; x < GROUND_SIZE; x++) {
-         grounds[x-1] = grounds[x]
-      }
-      if (grounds[GROUND_SIZE-3] === 'cone') {
-        grounds[GROUND_SIZE-1] = GROUND_TILES.select()
-      } else {
-        grounds[GROUND_SIZE-1] = ['cone'].concat(GROUND_TILES).select()
-      }
+      // Game over condition
       if (grounds[1] === 'cone' && status === 'pushoff') {
         clearInterval(loop)
         module.retry(TITLE)
         let skaterElement = document.getElementById("skater");
         skaterElement.children[1].className = 'pause'
-        return
+      } else{
+        sync()
       }
-      sync()
     }
     const handleAnyInput = function () {
       const handle = function(event) {
@@ -368,10 +374,7 @@ const NotFoundGames = (function() {
           grounds[x] = GROUND_TILES.select()
         }
         sync()
-        loop = setInterval(function() {
-          if (frame % 30 === 0) next()
-          frame += 1
-        }, 10);
+        loop = setInterval(next, 10);
         handleAnyInput()
       }
     }
