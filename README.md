@@ -1,3 +1,4 @@
-# NotFoundGames
+# 404
 Mini games for 404 pages.
-[demo](http://dev.eunb.it/404)
+- [2048](http://eunb.it/404/2048)
+- [Skate Jump](http://eunb.it/404/skate-jump)

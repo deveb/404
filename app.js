@@ -393,7 +393,8 @@ const NotFoundGames = (function() {
   let module = {
     config: {debug: false},
     games: [TwoOFourEight, SkateJump],
-    retry
+    retry,
+    TwoOFourEight, SkateJump
   }
   return {
     set_config: function (config) {
