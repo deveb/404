@@ -284,97 +284,184 @@ const NotFoundGames = (function() {
 
   const SkateJump = (function() {
     const TITLE = 'SkateJump'
-    const GROUND_SIZE = 16
-    const GROUND_TILES = [1, 2, 3, 4]
+    const FRAME_RATE = 50
 
-    let grounds = Array(GROUND_SIZE);
-    let status = 'pushoff'
-    let loop = null
-    let score = 0
+    const GROUND_SIZE = 20
+    const GROUND_TILES = [new Image(), new Image(), new Image(), new Image(), new Image()]
+    GROUND_TILES[0].src = '/404/images/ground_0.png'
+    GROUND_TILES[1].src = '/404/images/ground_1.png'
+    GROUND_TILES[2].src = '/404/images/ground_2.png'
+    GROUND_TILES[3].src = '/404/images/ground_3.png'
+    GROUND_TILES[4].src = '/404/images/ground_4.png'
+    const CONE = new Image();
+    CONE.src = '/404/images/cone.png';
+
+
+    let player = null;
+    let grounds = Array();
+    let groundCTX = null
+    let gameLoop = null
     let frame = 0
-    let ollied = 0
+    let status = 'pushoff'
+    let startAt = 0
+
+
+    var Skater = (function (positionX, positionY) {
+      var frame = 0
+      var original = {width: 300, height: 480}
+      var display = {width: 100, height: 160}
+      var action = null
+      var state = 'idle'
+      var sprite = {
+        pushoff: new Image(),
+        ollie: new Image()
+      }
+
+      var skater = document.getElementById("skater");
+      skater.style="display: block; margin-top:-250px; filter: invert(100%);min-height:250px;"
+      skater.width  = window.innerWidth;
+      skater.height = '250';
+      var ctx = skater.getContext("2d");
+
+      var clearAction = function () {
+          frame = 0
+          clearInterval(action)
+      }
+      var idle = function () {
+        clearAction()
+        state = 'idle'
+        ctx.clearRect(positionX, positionY, display.width, display.height);
+        ctx.drawImage(sprite['pushoff'],
+                      0, 0, original.width, original.height,
+                      positionX, positionY, display.width,display.height);
+      }
+      return {
+        load: function() {
+          sprite.ollie.src = '/404/images/ollie.png';
+          sprite.pushoff.src = '/404/images/pushoff.png';
+          sprite.pushoff.onload = function(){
+            ctx.drawImage(sprite.pushoff,
+                          0, 0, original.width, original.height,
+                          positionX, positionY, display.width, display.height);
+          }
+        },
+        pushoff: function () {
+          if (state === 'ollie') return
+          clearAction()
+          state = 'pushoff'
+          action = setInterval(function() {
+            frame = ++frame % 4; 
+            x = frame * original.width;
+            ctx.clearRect(positionX, positionY, display.width, display.height);
+            ctx.drawImage(sprite['pushoff'],
+                          x, 0, original.width, original.height,
+                          positionX, positionY, display.width,display.height);
+            if (frame === 0) idle()
+          }, 150)
+        },
+        ollie: function () {
+          const frameTo = {
+            time: [70,90,250,110,80],
+            marginY: [0, -10, -15, -10, 0]
+          }
+          if (state === 'ollie') return
+          clearAction()
+          state = 'ollie'
+
+          action = function() {
+              frame = ++frame % 5
+              x = frame * original.width;
+              ctx.clearRect(positionX, positionY - 15, display.width, display.height + 15);
+              ctx.drawImage(sprite['ollie'],
+                            x, 0, original.width, original.height,
+                            positionX, positionY + frameTo.marginY[frame-1], display.width,display.height);
+            if (frame === 0) idle()
+            else setTimeout(action, frameTo.time[frame-1]);
+          }
+          setTimeout(action, 0);
+        },
+        state: function () {
+          return state
+        }
+      }
+    })
 
     const setup = function () {
       let element = document.createElement('div');
       element.id=TITLE;
       element.innerHTML = `
-       <div id="skater">
-         <span class='offset'></span>
-         <span class='pushoff'></span>
-         <span id='score'></span>
-       </div>
-       <div id="grids">
-         <span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span>
-         <span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span>
-         <span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span>
-         <span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span>
-       </div>`
+        <canvas id="ground"></canvas>
+        <canvas id="skater"></canvas>
+      `
       document.getElementsByTagName("main")[0].appendChild(element)
-    }
-    const sync = function() {
-      let gridsElement = document.getElementById("grids");
-      for (let x = 0; x < GROUND_SIZE; x++) {
-        gridsElement.children[x].className = 'line ground_'+grounds[x]
-      }
-      let scoreElement = document.getElementById("score");
-      scoreElement.innerHTML = score;
-    }
-    const next = function() {
-      frame += 1
-      // Consider last 100ms of ollie as pushoff
-      if (new Date().getTime() - ollied > 900 - 100) status = 'pushoff'
-      // Update animation every 30 frames
-      if ((frame - 1) % 30 === 0){
-        if (grounds[0] === 'cone'){
-            score += 1
-        }
-        for (let x = 1; x < GROUND_SIZE; x++) {
-           grounds[x-1] = grounds[x]
-        }
-        if (grounds[GROUND_SIZE-3] === 'cone') {
-          grounds[GROUND_SIZE-1] = GROUND_TILES.select()
-        } else {
-          grounds[GROUND_SIZE-1] = ['cone'].concat(GROUND_TILES).select()
-        }
-      }
-      // Game over condition
-      if (grounds[1] === 'cone' && status === 'pushoff') {
-        clearInterval(loop)
-        module.retry(TITLE)
-        let skaterElement = document.getElementById("skater");
-        skaterElement.children[1].className = 'pause'
-      } else{
-        sync()
-      }
+
+      var ground = document.getElementById("ground");
+      ground.width  = window.innerWidth;
+      ground.height = '250';
+      ground.style="display: block; filter: invert(100%);"
+      groundCTX = ground.getContext("2d");
+
+      player = Skater(29, 50)
+      player.load()
     }
     const handleAnyInput = function () {
       const handle = function(event) {
-        const now = new Date().getTime()
-        if (status === 'ollie' || now - ollied < 900) return;
-        status = 'ollie'
-        ollied = now
-        let skaterElement = document.getElementById("skater");
-        skaterElement.children[1].className = 'ollie'
-        setTimeout(function () {
-          let skaterElement = document.getElementById("skater");
-          skaterElement.children[1].className = 'pushoff'
-          status = 'pushoff'
-        }, 900)
+        player.ollie()
       }
       document.addEventListener('keydown', handle);
-      document.body.addEventListener('touchend', handle, false);
+      document.body.addEventListener('touchstart', handle, false);
 
+    }
+    const sync = function(frame) {
+      for (var i =0; i< grounds.length; i++) {
+          groundCTX.clearRect(50* i, 150, 50, 80);
+        if (grounds[i] === CONE){
+          groundCTX.drawImage(CONE, 0, 0, 150, 250, 50* i - (50/FRAME_RATE*frame), 135, 48, 80);
+        } else {
+          groundCTX.drawImage(grounds[i], 0, 0, 150, 75, 50* i - (50/FRAME_RATE*frame), 197, 50, 25);
+        }
+      }
+    }
+    const next = function() {
+      frame = ++frame % FRAME_RATE;
+      if (frame === 0)  {
+        let sprite = [CONE].concat(GROUND_TILES).select()
+        if (grounds[GROUND_SIZE-1] === CONE || grounds[GROUND_SIZE-2] === CONE) {
+          sprite = GROUND_TILES.select()
+        }
+        grounds.push(sprite)
+        grounds.shift()
+
+      }
+      const score = Math.floor((new Date().getTime() - startAt)/100)
+
+      groundCTX.clearRect(ground.width - 70, 0, 70, 50);
+      groundCTX.font = '20px Consolas, monaco, monospace';
+      groundCTX.fillText(String(score).padStart(5, '0'), ground.width - 70, 30);
+      let timestamp = new Date().getTime()
+      if (timestamp % 3000 <= 5 ||
+          (750 <= timestamp % 6000 && timestamp % 6000 <= 755) ) {
+        player.pushoff()
+      }
+      // Game over condition
+      if (grounds[2] === CONE && player.state() !== 'ollie') {
+        clearInterval(gameLoop)
+        module.retry(TITLE)
+      } else{
+        sync(frame)
+      }
     }
 
     return {
       setup,
       initialize: function() {
-        score = 0
+        startAt = new Date().getTime()
         for (let x = 0; x < GROUND_SIZE; x++) {
           grounds[x] = GROUND_TILES.select()
         }
-        sync()
-        loop = setInterval(next, 10);
+
+        sync(0)
+        gameLoop = setInterval(next, 200/FRAME_RATE)
         handleAnyInput()
       }
     }
