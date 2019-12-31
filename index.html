@@ -7,9 +7,17 @@
     <link href="./app.css?version=2.0" rel="stylesheet" type="text/css">
   </head>
   <body>
-    <header>
-      <h1>404 Not Found</h1>
-    </header>
+    <p>
+      <span class='time'>[00:00]</span>
+      <span class='path'><a href='mailto:hwang@eunb.it'>hwang@eunb.it</a></span>
+      <span class='arrow'>&gt;</span> The page you're looking for was <span class='arrow'>NOT FOUND</span>.
+    </p>
+    <p id="text">
+      <span class='time'>[00:00]</span>
+      <span class='path'><a href='mailto:hwang@eunb.it'>hwang@eunb.it</a></span>
+      <span class='arrow'>&gt;</span>
+      <input type="text" />
+    </p>
     <main></main>
     <!-- JAVASCRIPT -->
     <script type="text/javascript" src="./app.js?version=2.0"></script>
@@ -19,6 +27,35 @@
         game.setup()
         game.initialize()
     }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var timeElements = document.getElementsByClassName('time')
+        for(var i = 0; i < timeElements.length; i++){
+          timeElements[i].innerHTML = '[' + new Date().toString().substring(16, 24) + ']';
+        }
+        document.getElementById("text").lastElementChild.focus();
+
+        var text = [
+          "How about playing a game?",
+          "<a class='path' href='/skate-jump'>Skate Jump</a>? or <a class='path' href='/2048'>2048</a>?"
+        ]
+        function popReply () {
+          if (text.length == 0) return
+          var reply = document.createElement('p')
+          reply.innerHTML = "<span class='time'>[" + new Date().toString().substring(16, 24) + "]</span>" +
+            "<span class='path'><a href='mailto:hwang@eunb.it'> hwang@eunb.it </a></span>" +
+            "<span class='arrow'>&gt;</span> " + text.shift()
+          document.body.getElementsByTagName("p")[0].appendChild(reply);
+          document.getElementById("text").getElementsByTagName("span")[0].innerHTML = "[" + new Date().toString().substring(16, 24) + "]"
+          document.getElementById("text").lastElementChild.value = ""
+          document.getElementById("text").lastElementChild.focus();
+        }
+        document.querySelector('input').addEventListener('keyup', function() {
+          if (window.event.keyCode == 13) {
+            popReply()
+          }
+        });
+      });
     </script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-152717522-1"></script>
